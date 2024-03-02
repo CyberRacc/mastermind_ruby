@@ -1,4 +1,6 @@
+# frozen-string-literal: true
+
 source 'https://rubygems.org'
 
-require 'sorbet-runtime'
-require 'rubocop'
+gem 'rubocop-sorbet'
+gem 'sorbet'
