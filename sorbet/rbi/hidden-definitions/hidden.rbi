@@ -5496,6 +5496,8 @@ class Net::HTTP::Persistent
   def self.detect_idle_timeout(uri, max=T.unsafe(nil)); end
 end
 
+Net::HTTP::ProxyMod = Net::HTTP::ProxyDelta
+
 class Net::HTTPAlreadyReported
   HAS_BODY = ::T.let(nil, ::T.untyped)
 end
@@ -6404,12 +6406,6 @@ class Parser::Rewriter
   DEPRECATION_WARNING = ::T.let(nil, ::T.untyped)
 end
 
-class Parser::Ruby24
-  Racc_arg = ::T.let(nil, ::T.untyped)
-  Racc_debug_parser = ::T.let(nil, ::T.untyped)
-  Racc_token_to_s_table = ::T.let(nil, ::T.untyped)
-end
-
 class Parser::Source::Buffer
   ENCODING_RE = ::T.let(nil, ::T.untyped)
 end
@@ -7290,9 +7286,12 @@ module RuboCop::AST::NodePattern::Sets
   SET_0_1 = ::T.let(nil, ::T.untyped)
   SET_10_10 = ::T.let(nil, ::T.untyped)
   SET_1_1 = ::T.let(nil, ::T.untyped)
+  SET_ABSTRACT_OVERRIDE_OVERRIDABLE_ETC = ::T.let(nil, ::T.untyped)
   SET_ADD_DEPENDENCY_ADD_RUNTIME_DEPENDENCY_ADD_DEVELOPMENT_DEPENDENCY = ::T.let(nil, ::T.untyped)
+  SET_ALL_ANY_CLASS_OF_ETC = ::T.let(nil, ::T.untyped)
   SET_ANY_EMPTY = ::T.let(nil, ::T.untyped)
   SET_ANY_EMPTY_NONE_ETC = ::T.let(nil, ::T.untyped)
+  SET_ATTR_READER_ATTR_WRITER_ATTR_ACCESSOR = ::T.let(nil, ::T.untyped)
   SET_ATTR_READER_ATTR_WRITER_ATTR_ACCESSOR_ATTR = ::T.let(nil, ::T.untyped)
   SET_BRANCH_REF_TAG = ::T.let(nil, ::T.untyped)
   SET_CAPTURE2_CAPTURE2E_CAPTURE3_ETC = ::T.let(nil, ::T.untyped)
@@ -7302,6 +7301,7 @@ module RuboCop::AST::NodePattern::Sets
   SET_CLASS_MODULE = ::T.let(nil, ::T.untyped)
   SET_CLASS_MODULE_STRUCT = ::T.let(nil, ::T.untyped)
   SET_CLONE_DUP_FREEZE = ::T.let(nil, ::T.untyped)
+  SET_CONSTANTIZE_CONSTANTS_CONST_GET = ::T.let(nil, ::T.untyped)
   SET_COUNT_LENGTH_SIZE = ::T.let(nil, ::T.untyped)
   SET_DEFINE_METHOD = ::T.let(nil, ::T.untyped)
   SET_DEFINE_METHOD_DEFINE_SINGLETON_METHOD = ::T.let(nil, ::T.untyped)
@@ -7338,6 +7338,7 @@ module RuboCop::AST::NodePattern::Sets
   SET_PRESENT_ANY_BLANK_EMPTY = ::T.let(nil, ::T.untyped)
   SET_PRIVATE_PROTECTED_PRIVATE_CLASS_METHOD = ::T.let(nil, ::T.untyped)
   SET_PRIVATE_PROTECTED_PUBLIC = ::T.let(nil, ::T.untyped)
+  SET_PROP_CONST = ::T.let(nil, ::T.untyped)
   SET_PUBLIC_CONSTANT_PRIVATE_CONSTANT = ::T.let(nil, ::T.untyped)
   SET_PUBLIC_PROTECTED_PRIVATE_MODULE_FUNCTION = ::T.let(nil, ::T.untyped)
   SET_RAISE_FAIL = ::T.let(nil, ::T.untyped)
@@ -7349,10 +7350,13 @@ module RuboCop::AST::NodePattern::Sets
   SET_SELECT_FILTER_FIND_ALL = ::T.let(nil, ::T.untyped)
   SET_SELECT_SELECT = ::T.let(nil, ::T.untyped)
   SET_SEND_PUBLIC_SEND___SEND__ = ::T.let(nil, ::T.untyped)
+  SET_SIG_HELPERS = ::T.let(nil, ::T.untyped)
   SET_SORT_BY_SORT = ::T.let(nil, ::T.untyped)
   SET_SPAWN_SYSTEM = ::T.let(nil, ::T.untyped)
   SET_SPRINTF_FORMAT = ::T.let(nil, ::T.untyped)
   SET_STRUCT_CLASS = ::T.let(nil, ::T.untyped)
+  SET_STRUCT_IMMUTABLESTRUCT = ::T.let(nil, ::T.untyped)
+  SET_STRUCT_IMMUTABLESTRUCT_INEXACTSTRUCT = ::T.let(nil, ::T.untyped)
   SET_SUCC_PRED_NEXT = ::T.let(nil, ::T.untyped)
   SET_TO_ENUM_ENUM_FOR = ::T.let(nil, ::T.untyped)
   SET_TO_H_TO_HASH = ::T.let(nil, ::T.untyped)
@@ -8954,6 +8958,110 @@ class RuboCop::Cop::Severity
   NAMES = ::T.let(nil, ::T.untyped)
 end
 
+class RuboCop::Cop::Sorbet::AllowIncompatibleOverride
+  MSG = ::T.let(nil, ::T.untyped)
+  RESTRICT_ON_SEND = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::BindingConstantWithoutTypeAlias
+  MSG = ::T.let(nil, ::T.untyped)
+  WITHOUT_BLOCK_MSG = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::BuggyObsoleteStrictMemoization
+  MSG = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::CallbackConditionalsBinding
+  CALLBACKS = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::EmptyLineAfterSig
+  MSG = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::EnforceSigilOrder
+  CODING_REGEX = ::T.let(nil, ::T.untyped)
+  FROZEN_REGEX = ::T.let(nil, ::T.untyped)
+  INDENT_REGEX = ::T.let(nil, ::T.untyped)
+  MAGIC_REGEX = ::T.let(nil, ::T.untyped)
+  PREFERRED_ORDER = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::ForbidExtendTSigHelpersInShims
+  MSG = ::T.let(nil, ::T.untyped)
+  RESTRICT_ON_SEND = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::ForbidIncludeConstLiteral
+  MSG = ::T.let(nil, ::T.untyped)
+  RESTRICT_ON_SEND = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::ForbidSuperclassConstLiteral
+  MSG = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::ForbidTStruct
+  MSG_PROPS = ::T.let(nil, ::T.untyped)
+  MSG_STRUCT = ::T.let(nil, ::T.untyped)
+  RESTRICT_ON_SEND = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::ForbidTUnsafe
+  MSG = ::T.let(nil, ::T.untyped)
+  RESTRICT_ON_SEND = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::ForbidTUntyped
+  MSG = ::T.let(nil, ::T.untyped)
+  RESTRICT_ON_SEND = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::ForbidTypeAliasedShapes
+  MSG = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::ForbidUntypedStructProps
+  MSG = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::ImplicitConversionMethod
+  IMPLICIT_CONVERSION_METHODS = ::T.let(nil, ::T.untyped)
+  MSG = ::T.let(nil, ::T.untyped)
+  RESTRICT_ON_SEND = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::ObsoleteStrictMemoization
+  MSG = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::OneAncestorPerLine
+  MSG = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::RedundantExtendTSig
+  MSG = ::T.let(nil, ::T.untyped)
+  RESTRICT_ON_SEND = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::SignatureBuildOrder
+  ORDER = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::SingleLineRbiClassModuleDefinitions
+  MSG = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::TypeAliasName
+  MSG = ::T.let(nil, ::T.untyped)
+end
+
+class RuboCop::Cop::Sorbet::ValidSigil
+  SIGIL_REGEX = ::T.let(nil, ::T.untyped)
+  STRICTNESS_LEVELS = ::T.let(nil, ::T.untyped)
+end
+
 module RuboCop::Cop::SpaceAfterPunctuation
   MSG = ::T.let(nil, ::T.untyped)
 end
@@ -9633,6 +9741,7 @@ class RuboCop::Cop::Style::MultipleComparison
 end
 
 class RuboCop::Cop::Style::MutableConstant
+  include ::RuboCop::Cop::Sorbet::MutableConstantSorbetAwareBehaviour
   MSG = ::T.let(nil, ::T.untyped)
 end
 
@@ -10471,6 +10580,11 @@ end
 class RuboCop::Runner
   MAX_ITERATIONS = ::T.let(nil, ::T.untyped)
   REDUNDANT_COP_DISABLE_DIRECTIVE_RULES = ::T.let(nil, ::T.untyped)
+end
+
+module RuboCop::Sorbet
+  CONFIG = ::T.let(nil, ::T.untyped)
+  VERSION = ::T.let(nil, ::T.untyped)
 end
 
 class RuboCop::TargetFinder
