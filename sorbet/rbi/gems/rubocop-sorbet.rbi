@@ -2,6 +2,7 @@
 #   srb rbi gems
 
 # typed: strict
+
 #
 # If you would like to make changes to this file, great! Please create the gem's shim here:
 #
@@ -11,17 +12,23 @@
 
 module RuboCop
 end
+
 module RuboCop::Sorbet
 end
+
 class RuboCop::Sorbet::Error < StandardError
 end
+
 module RuboCop::Sorbet::Inject
   def self.defaults!; end
 end
+
 module RuboCop::Cop
 end
+
 module RuboCop::Cop::Sorbet
 end
+
 module RuboCop::Cop::Sorbet::TargetSorbetVersion
   def enabled_for_sorbet_static_version?; end
   def read_sorbet_static_version_from_bundler_lock_file; end
@@ -29,10 +36,12 @@ module RuboCop::Cop::Sorbet::TargetSorbetVersion
   def sorbet_enabled?; end
   def target_sorbet_static_version_from_bundler_lock_file; end
 end
+
 module RuboCop::Cop::Sorbet::TargetSorbetVersion::ClassMethods
   def minimum_target_sorbet_static_version(version); end
   def supports_target_sorbet_static_version?(version); end
 end
+
 module RuboCop::Cop::Sorbet::SignatureHelp
   def on_block(node); end
   def on_numblock(node); end
@@ -42,6 +51,7 @@ module RuboCop::Cop::Sorbet::SignatureHelp
   def without_runtime?(param0 = nil); end
   extend RuboCop::AST::NodePattern::Macros
 end
+
 class RuboCop::Cop::Sorbet::BindingConstantWithoutTypeAlias < RuboCop::Cop::Base
   def on_casgn(node); end
   def requires_type_alias?(param0 = nil); end
@@ -50,14 +60,17 @@ class RuboCop::Cop::Sorbet::BindingConstantWithoutTypeAlias < RuboCop::Cop::Base
   def type_alias_without_block(param0 = nil); end
   extend RuboCop::Cop::AutoCorrector
 end
+
 class RuboCop::Cop::Sorbet::ConstantsFromStrings < RuboCop::Cop::Cop
   def constant_from_string?(param0 = nil); end
   def on_send(node); end
 end
+
 class RuboCop::Cop::Sorbet::ForbidSuperclassConstLiteral < RuboCop::Cop::Base
   def dynamic_superclass?(param0 = nil); end
   def on_class(node); end
 end
+
 class RuboCop::Cop::Sorbet::ForbidIncludeConstLiteral < RuboCop::Cop::Base
   def dynamic_inclusion?(param0 = nil); end
   def neither_const_nor_self?(node); end
@@ -65,11 +78,13 @@ class RuboCop::Cop::Sorbet::ForbidIncludeConstLiteral < RuboCop::Cop::Base
   def within_onymous_module?(node); end
   extend RuboCop::Cop::AutoCorrector
 end
+
 class RuboCop::Cop::Sorbet::ForbidTypeAliasedShapes < RuboCop::Cop::Base
   def on_block(node); end
   def on_numblock(node); end
   def shape_type_alias?(param0 = nil); end
 end
+
 class RuboCop::Cop::Sorbet::ForbidUntypedStructProps < RuboCop::Cop::Base
   def on_class(node); end
   def subclass_of_t_struct?(param0 = nil); end
@@ -78,12 +93,14 @@ class RuboCop::Cop::Sorbet::ForbidUntypedStructProps < RuboCop::Cop::Base
   def t_untyped(param0 = nil); end
   def untyped_props(param0); end
 end
+
 class RuboCop::Cop::Sorbet::ImplicitConversionMethod < RuboCop::Cop::Base
   def on_alias(node); end
   def on_def(node); end
   def on_defs(node); end
   def on_send(node); end
 end
+
 class RuboCop::Cop::Sorbet::OneAncestorPerLine < RuboCop::Cop::Cop
   def abstract?(param0); end
   def autocorrect(node); end
@@ -94,10 +111,12 @@ class RuboCop::Cop::Sorbet::OneAncestorPerLine < RuboCop::Cop::Cop
   def process_node(node); end
   def requires_ancestors(param0); end
 end
+
 class RuboCop::Cop::Sorbet::CallbackConditionalsBinding < RuboCop::Cop::Cop
   def autocorrect(node); end
   def on_send(node); end
 end
+
 class RuboCop::Cop::Sorbet::ForbidTStruct < RuboCop::Cop::Base
   def initialize_method(indent, props); end
   def on_class(node); end
@@ -110,6 +129,7 @@ class RuboCop::Cop::Sorbet::ForbidTStruct < RuboCop::Cop::Base
   include RuboCop::Cop::CommentsHelp
   include RuboCop::Cop::RangeHelp
 end
+
 class RuboCop::Cop::Sorbet::ForbidTStruct::TStructWalker
   def extend_t_sig?(param0 = nil); end
   def has_extend_t_sig; end
@@ -120,6 +140,7 @@ class RuboCop::Cop::Sorbet::ForbidTStruct::TStructWalker
   extend RuboCop::AST::NodePattern::Macros
   include RuboCop::AST::Traversal
 end
+
 class RuboCop::Cop::Sorbet::ForbidTStruct::Property
   def attr_accessor; end
   def attr_sig; end
@@ -135,24 +156,29 @@ class RuboCop::Cop::Sorbet::ForbidTStruct::Property
   def node; end
   def type; end
 end
+
 class RuboCop::Cop::Sorbet::ForbidTUnsafe < RuboCop::Cop::Base
   def on_send(node); end
   def t_unsafe?(param0 = nil); end
 end
+
 class RuboCop::Cop::Sorbet::ForbidTUntyped < RuboCop::Cop::Base
   def on_send(node); end
   def t_untyped?(param0 = nil); end
 end
+
 class RuboCop::Cop::Sorbet::RedundantExtendTSig < RuboCop::Cop::Base
   def extend_t_sig?(param0 = nil); end
   def on_send(node); end
   extend RuboCop::Cop::AutoCorrector
   include RuboCop::Cop::RangeHelp
 end
+
 class RuboCop::Cop::Sorbet::TypeAliasName < RuboCop::Cop::Base
   def on_casgn(node); end
   def underscored_type_alias?(param0 = nil); end
 end
+
 class RuboCop::Cop::Sorbet::ObsoleteStrictMemoization < RuboCop::Cop::Base
   def legacy_memoization_pattern?(param0 = nil); end
   def on_begin(node); end
@@ -165,6 +191,7 @@ class RuboCop::Cop::Sorbet::ObsoleteStrictMemoization < RuboCop::Cop::Base
   include RuboCop::Cop::RangeHelp
   include RuboCop::Cop::Sorbet::TargetSorbetVersion
 end
+
 class RuboCop::Cop::Sorbet::BuggyObsoleteStrictMemoization < RuboCop::Cop::Base
   def buggy_legacy_memoization_pattern?(param0 = nil); end
   def on_begin(node); end
@@ -177,23 +204,27 @@ class RuboCop::Cop::Sorbet::BuggyObsoleteStrictMemoization < RuboCop::Cop::Base
   include RuboCop::Cop::RangeHelp
   include RuboCop::Cop::Sorbet::TargetSorbetVersion
 end
+
 class RuboCop::Cop::Sorbet::ForbidExtendTSigHelpersInShims < RuboCop::Cop::Base
   def extend_t_sig_or_helpers?(param0 = nil); end
   def on_send(node); end
   extend RuboCop::Cop::AutoCorrector
   include RuboCop::Cop::RangeHelp
 end
+
 class RuboCop::Cop::Sorbet::ForbidRBIOutsideOfAllowedPaths < RuboCop::Cop::Cop
   def allowed_paths; end
   def investigate(processed_source); end
   include RuboCop::Cop::RangeHelp
 end
+
 class RuboCop::Cop::Sorbet::SingleLineRbiClassModuleDefinitions < RuboCop::Cop::Base
   def convert_newlines_to_semicolons(source); end
   def on_class(node); end
   def on_module(node); end
   extend RuboCop::Cop::AutoCorrector
 end
+
 class RuboCop::Cop::Sorbet::AllowIncompatibleOverride < RuboCop::Cop::Base
   def on_block(node); end
   def on_numblock(node); end
@@ -202,12 +233,14 @@ class RuboCop::Cop::Sorbet::AllowIncompatibleOverride < RuboCop::Cop::Base
   def sig?(param0); end
   def sig_dot_override?(param0 = nil); end
 end
+
 class RuboCop::Cop::Sorbet::CheckedTrueInSignature < RuboCop::Cop::Cop
   def offending_node(param0); end
   def on_signature(node); end
   include RuboCop::Cop::RangeHelp
   include RuboCop::Cop::Sorbet::SignatureHelp
 end
+
 class RuboCop::Cop::Sorbet::VoidCheckedTests < RuboCop::Cop::Base
   def checked_tests(param0); end
   def on_signature(node); end
@@ -216,11 +249,13 @@ class RuboCop::Cop::Sorbet::VoidCheckedTests < RuboCop::Cop::Base
   include RuboCop::Cop::RangeHelp
   include RuboCop::Cop::Sorbet::SignatureHelp
 end
+
 class RuboCop::Cop::Sorbet::KeywordArgumentOrdering < RuboCop::Cop::Cop
   def check_order_for_kwoptargs(parameters); end
   def on_signature(node); end
   include RuboCop::Cop::Sorbet::SignatureHelp
 end
+
 class RuboCop::Cop::Sorbet::SignatureBuildOrder < RuboCop::Cop::Cop
   def autocorrect(node); end
   def call_chain(sig_child_node); end
@@ -230,8 +265,10 @@ class RuboCop::Cop::Sorbet::SignatureBuildOrder < RuboCop::Cop::Cop
   def root_call(param0); end
   include RuboCop::Cop::Sorbet::SignatureHelp
 end
+
 class RuboCop::Cop::Sorbet::SignatureBuildOrder::ModernBuilder < RuboCop::AST::Builder
 end
+
 class RuboCop::Cop::Sorbet::EnforceSignatures < RuboCop::Cop::Cop
   def accessor?(param0 = nil); end
   def autocorrect(node); end
@@ -246,6 +283,7 @@ class RuboCop::Cop::Sorbet::EnforceSignatures < RuboCop::Cop::Cop
   def scope(node); end
   include RuboCop::Cop::Sorbet::SignatureHelp
 end
+
 class RuboCop::Cop::Sorbet::EnforceSignatures::SigSuggestion
   def generate_params; end
   def generate_return; end
@@ -256,6 +294,7 @@ class RuboCop::Cop::Sorbet::EnforceSignatures::SigSuggestion
   def returns=(arg0); end
   def to_autocorrect; end
 end
+
 class RuboCop::Cop::Sorbet::EmptyLineAfterSig < RuboCop::Cop::Base
   def lines_between(node1, node2, buffer: nil); end
   def next_sibling(node); end
@@ -265,6 +304,7 @@ class RuboCop::Cop::Sorbet::EmptyLineAfterSig < RuboCop::Cop::Base
   include RuboCop::Cop::RangeHelp
   include RuboCop::Cop::Sorbet::SignatureHelp
 end
+
 class RuboCop::Cop::Sorbet::ValidSigil < RuboCop::Cop::Cop
   def autocorrect(_node); end
   def check_sigil_present(sigil); end
@@ -280,24 +320,31 @@ class RuboCop::Cop::Sorbet::ValidSigil < RuboCop::Cop::Cop
   def suggested_strictness; end
   def suggested_strictness_level; end
 end
+
 class RuboCop::Cop::Sorbet::HasSigil < RuboCop::Cop::Sorbet::ValidSigil
   def require_sigil_on_all_files?; end
 end
+
 class RuboCop::Cop::Sorbet::IgnoreSigil < RuboCop::Cop::Sorbet::HasSigil
   def minimum_strictness; end
 end
+
 class RuboCop::Cop::Sorbet::FalseSigil < RuboCop::Cop::Sorbet::HasSigil
   def minimum_strictness; end
 end
+
 class RuboCop::Cop::Sorbet::TrueSigil < RuboCop::Cop::Sorbet::HasSigil
   def minimum_strictness; end
 end
+
 class RuboCop::Cop::Sorbet::StrictSigil < RuboCop::Cop::Sorbet::HasSigil
   def minimum_strictness; end
 end
+
 class RuboCop::Cop::Sorbet::StrongSigil < RuboCop::Cop::Sorbet::HasSigil
   def minimum_strictness; end
 end
+
 class RuboCop::Cop::Sorbet::EnforceSigilOrder < RuboCop::Cop::Sorbet::ValidSigil
   def autocorrect(_node); end
   def check_magic_comments_order(tokens); end
@@ -305,36 +352,49 @@ class RuboCop::Cop::Sorbet::EnforceSigilOrder < RuboCop::Cop::Sorbet::ValidSigil
   def investigate(processed_source); end
   include RuboCop::Cop::RangeHelp
 end
+
 class RuboCop::Cop::Sorbet::EnforceSingleSigil < RuboCop::Cop::Sorbet::ValidSigil
   def autocorrect(_node); end
   def extract_all_sigils(processed_source); end
   def investigate(processed_source); end
   include RuboCop::Cop::RangeHelp
 end
+
 module RuboCop::Cop::Sorbet::MutableConstantSorbetAwareBehaviour
   def on_assignment(value); end
   def self.prepended(base); end
 end
+
 class RuboCop::Cop::Style::MutableConstant < RuboCop::Cop::Base
   def t_let(param0 = nil); end
 end
+
 class Mastermind
+  def guess_valid?(guess); end
   def initialize; end
+  def mode_select; end
+  def play_game; end
+  def play_round(round); end
+  def player_guess; end
 end
-class Computer
-  def generate_code; end
-  def guess; end
-  def initialize(name); end
-  def name; end
+
+class UserInteraction
+  def create_code; end
+  def guess_input; end
+  def user_name; end
 end
-class Board
-  def board; end
-  def display; end
+
+class GameBoard
+  def display_board; end
   def initialize; end
-  def update(row, column, value); end
-  def valid_move?(row, column); end
+  def update_board(round, colors); end
 end
+
 class Player
   def initialize(name); end
   def name; end
+end
+
+class Computer
+  def generate_code(code_length); end
 end
