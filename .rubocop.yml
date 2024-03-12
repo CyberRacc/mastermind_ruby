@@ -1,9 +1,10 @@
+# .rubocop.yml
 require:
-  - rubocop-sorbet
+  # - rubocop-sorbet
 
 AllCops:
   TargetRubyVersion: 3.3 # or your Ruby version
   NewCops: enable
 
-Sorbet:
-  Enabled: true
+# Sorbet:
+#   Enabled: true

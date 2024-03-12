@@ -1,0 +1,14 @@
+include:
+  - "**/*.rb"
+exclude:
+  - spec/**/*
+  - test/**/*
+  - vendor/**/*
+  - ".bundle/**/*"
+require: []
+domains: []
+reporters:
+  - rubocop: { "only": ["Lint"] }
+  - require_not_found
+plugins: []
+max_files: 5000

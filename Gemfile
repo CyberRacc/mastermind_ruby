@@ -1,6 +1,5 @@
-# frozen-string-literal: true
+# frozen_string_literal: true
 
 source 'https://rubygems.org'
 
-gem 'rubocop-sorbet'
-gem 'sorbet'
+gem 'rubocop'
