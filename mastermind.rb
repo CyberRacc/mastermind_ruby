@@ -23,26 +23,25 @@ class Mastermind
 
   def play_game
     puts 'Game Start!'
-    round = 11
-    while round >= 0 # 0 is final round
+    round = 1
+    while round <= 12 # 12 is final round
       puts "Round #{round}"
       play_round
-      round -= 1
+      round += 1
     end
   end
 
   def play_round
-    # Round code
+    winner = nil
     guesses = player_guess
 
     puts guesses
 
-    # The plus 11 is to allow the rounds to build up from the bottom
     guess_feedback(guesses, @secret_code)
+    winner = @player.name if code_guessed?(guesses)
   end
 
   def guess_counter(guesses, secret_code)
-    puts "Debug: Original Secret Code: #{secret_code.inspect}"
     correct_color_and_position = guess_matches_code(guesses, secret_code)
 
     remaining_secret_code = secret_code.dup
@@ -50,27 +49,22 @@ class Mastermind
 
     guesses.each_with_index do |guess, index|
       if guess == remaining_secret_code[index]
-        remaining_secret_code[index] = nil
+        remaining_secret_code[index] = nil # Mark the correct color and position as nil
       else
-        remaining_guesses.push(guess)
+        remaining_guesses.push(guess) # Add the incorrect guesses to the remaining guesses array
       end
     end
 
-    puts "Debug: Remaining Secret Code after position match removal: #{remaining_secret_code.inspect}"
-    puts "Debug: Remaining Guesses: #{remaining_guesses.inspect}"
-
     correct_color_wrong_position = remaining_guesses.count do |guess|
       if remaining_secret_code.include?(guess)
-        remaining_secret_code[remaining_secret_code.index(guess)] = nil
+        remaining_secret_code[remaining_secret_code.index(guess)] = nil # Mark the correct color but wrong position as nil
         true
       else
         false
       end
     end
 
-    puts "Debug: Correct Color and Position: #{correct_color_and_position}, Correct Color, Wrong Position: #{correct_color_wrong_position}"
-
-    [correct_color_and_position, correct_color_wrong_position]
+    [correct_color_and_position, correct_color_wrong_position] # Return the count of correct color and position, and correct color but wrong position
   end
 
   def guess_feedback(guesses, secret_code)
@@ -103,7 +97,7 @@ class Mastermind
     format_guess(@user_interaction.guess_input)
   end
 
-  def choose_mode
+  def choose_mode # rubocop:disable Metrics/MethodLength
     mode = nil
     until %w[breaker creator].include?(mode)
       mode = @user_interaction.mode_select
@@ -117,6 +111,10 @@ class Mastermind
         puts 'Invalid input'
       end
     end
+  end
+
+  def code_guessed?(guesses)
+    guesses == @secret_code
   end
 
   def game_finished
