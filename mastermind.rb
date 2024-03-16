@@ -26,40 +26,68 @@ class Mastermind
     round = 11
     while round >= 0 # 0 is final round
       puts "Round #{round}"
-      play_round(round)
+      play_round
       round -= 1
     end
   end
 
-  def guess_counter(guesses, secret_code)
-    correct_color_and_position = 0
-    correct_color_wrong_position = 0
-
-    correct_color_and_position + 1 if guess_matches_code_color?(guesses, secret_code)
-    correct_color_wrong_position + 1
-  end
-
-  def guess_matches_code_color?(guesses, secret_code)
-    guesses.each_with_index do |g_color, g_index|
-      secret_code.each_with_index do |sc_color, sc_index|
-        true if g_color == sc_color && g_color[g_index] == sc_color[sc_index]
-      end
-    end
-  end
-
-  def guess_feedback
-    # Get number of guesses in correct place
-    # Get number of guesses that are the correct color but wrong place
-  end
-
-  def play_round(round)
+  def play_round
     # Round code
     guesses = player_guess
 
     puts guesses
 
     # The plus 11 is to allow the rounds to build up from the bottom
-    @game_board.update_board(round, guesses) if guess_valid?(guesses)
+    guess_feedback(guesses, @secret_code)
+  end
+
+  def guess_counter(guesses, secret_code)
+    puts "Debug: Original Secret Code: #{secret_code.inspect}"
+    correct_color_and_position = guess_matches_code(guesses, secret_code)
+
+    remaining_secret_code = secret_code.dup
+    remaining_guesses = []
+
+    guesses.each_with_index do |guess, index|
+      if guess == remaining_secret_code[index]
+        remaining_secret_code[index] = nil
+      else
+        remaining_guesses.push(guess)
+      end
+    end
+
+    puts "Debug: Remaining Secret Code after position match removal: #{remaining_secret_code.inspect}"
+    puts "Debug: Remaining Guesses: #{remaining_guesses.inspect}"
+
+    correct_color_wrong_position = remaining_guesses.count do |guess|
+      if remaining_secret_code.include?(guess)
+        remaining_secret_code[remaining_secret_code.index(guess)] = nil
+        true
+      else
+        false
+      end
+    end
+
+    puts "Debug: Correct Color and Position: #{correct_color_and_position}, Correct Color, Wrong Position: #{correct_color_wrong_position}"
+
+    [correct_color_and_position, correct_color_wrong_position]
+  end
+
+  def guess_feedback(guesses, secret_code)
+    correct_color_and_position, correct_color_wrong_position = guess_counter(guesses, secret_code)
+    puts "Debug: Original Secret Code: #{secret_code.inspect}"
+    puts "Debug: Guesses: #{guesses.inspect}"
+    puts "Correct Color and Position: #{correct_color_and_position}, Correct Color, Wrong Position: #{correct_color_wrong_position}"
+  end
+
+  def guess_matches_code(guesses, secret_code)
+    correct_color_and_position = 0
+
+    guesses.each_with_index do |guess, index|
+      correct_color_and_position += 1 if guess == secret_code[index]
+    end
+
+    correct_color_and_position
   end
 
   def guess_valid?(guess)
@@ -98,7 +126,7 @@ class Mastermind
 
   # Splits the guess into an array
   def format_guess(guesses)
-    guesses.split
+    guesses.split.map(&:to_sym) # Convert each guess string to a symbol
   end
 end
 
@@ -110,6 +138,7 @@ class UserInteraction
   end
 
   def guess_input
+    puts 'Possible colors: red blue green yellow black white'
     puts "Guess example: 'blue red green yellow'"
     print 'Enter your guess: '
     gets.chomp.to_s
@@ -170,6 +199,7 @@ end
 
 # Contains logic for the computer including moves,
 class Computer
+  # The colors the computer can choose from
   COLORS = %i[red blue green yellow black white].freeze
 
   # This method can be done in one line, `COLORS.sample(code_length)`
