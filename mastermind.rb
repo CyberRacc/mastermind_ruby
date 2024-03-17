@@ -26,6 +26,8 @@ class Mastermind # rubocop:disable Metrics/ClassLength
     puts 'Game Start!'
     round = 1
     while round <= 12 # 12 is final round
+    round = 1
+    while round <= 12 # 12 is final round
       puts "Round #{round}"
       play_round(round - 1)
       round += 1
@@ -112,6 +114,7 @@ class Mastermind # rubocop:disable Metrics/ClassLength
   end
 
   def choose_mode # rubocop:disable Metrics/MethodLength
+  def choose_mode # rubocop:disable Metrics/MethodLength
     mode = nil
 
     # Loop until the user selects a valid mode
@@ -127,6 +130,10 @@ class Mastermind # rubocop:disable Metrics/ClassLength
         puts 'Invalid input'
       end
     end
+  end
+
+  def code_guessed?(guesses)
+    guesses == @secret_code
   end
 
   def check_win(guesses)
