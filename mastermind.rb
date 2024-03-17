@@ -1,7 +1,16 @@
 # frozen_string_literal: true
 
+# Contains the utility methods
+module Utility
+  def self.clear_screen
+    system 'clear' || 'cls'
+  end
+end
+
 # Contains the game logic
-class Mastermind
+class Mastermind # rubocop:disable Metrics/ClassLength
+  include Utility
+
   def initialize
     @game_board = GameBoard.new
     @user_interaction = UserInteraction.new
@@ -9,93 +18,92 @@ class Mastermind
     @computer = Computer.new
     @game_board.display_board
     @secret_code = []
-    game_manager
-  end
-
-  def game_manager
-    welcome
+    @user_interaction.welcome(@player.name)
     choose_mode
-  end
-
-  def welcome
-    puts 'Welcome to Mastermind!'
   end
 
   def play_game
     puts 'Game Start!'
-    round = 11
-    while round >= 0 # 0 is final round
+    round = 1
+    while round <= 12 # 12 is final round
       puts "Round #{round}"
-      play_round
-      round -= 1
+      play_round(round - 1)
+      round += 1
     end
+    game_over
   end
 
-  def play_round
-    # Round code
-    guesses = player_guess
+  def play_round(round)
+    player_guesses = nil
+    loop do
+      player_guesses = player_guess
+      break if guess_valid?(player_guesses)
 
-    puts guesses
+      puts 'Invalid guess. Please make sure your guess includes 4 valid colors.'
+    end
 
-    # The plus 11 is to allow the rounds to build up from the bottom
-    guess_feedback(guesses, @secret_code)
+    feedback = guess_feedback(player_guesses)
+    @game_board.update_board(round, player_guesses, feedback)
+    @game_board.display_board
+    check_win(player_guesses)
   end
 
-  def guess_counter(guesses, secret_code)
-    puts "Debug: Original Secret Code: #{secret_code.inspect}"
-    correct_color_and_position = guess_matches_code(guesses, secret_code)
+  def guess_counter(guesses)
+    correct_color_and_position = guess_matches_code(guesses)
 
-    remaining_secret_code = secret_code.dup
-    remaining_guesses = []
+    remaining_secret_code = @secret_code.dup
+    remaining_guesses = guesses.map.with_index do |guess, index|
+      guess unless guess == remaining_secret_code[index]
+    end.compact
 
-    guesses.each_with_index do |guess, index|
-      if guess == remaining_secret_code[index]
-        remaining_secret_code[index] = nil
-      else
-        remaining_guesses.push(guess)
-      end
-    end
+    remaining_secret_code.compact!
 
-    puts "Debug: Remaining Secret Code after position match removal: #{remaining_secret_code.inspect}"
-    puts "Debug: Remaining Guesses: #{remaining_guesses.inspect}"
-
-    correct_color_wrong_position = remaining_guesses.count do |guess|
-      if remaining_secret_code.include?(guess)
-        remaining_secret_code[remaining_secret_code.index(guess)] = nil
-        true
-      else
-        false
-      end
-    end
-
-    puts "Debug: Correct Color and Position: #{correct_color_and_position}, Correct Color, Wrong Position: #{correct_color_wrong_position}"
+    correct_color_wrong_position = correct_colors_wrong_positions(remaining_secret_code, remaining_guesses)
 
     [correct_color_and_position, correct_color_wrong_position]
   end
 
-  def guess_feedback(guesses, secret_code)
-    correct_color_and_position, correct_color_wrong_position = guess_counter(guesses, secret_code)
-    puts "Debug: Original Secret Code: #{secret_code.inspect}"
-    puts "Debug: Guesses: #{guesses.inspect}"
-    puts "Correct Color and Position: #{correct_color_and_position}, Correct Color, Wrong Position: #{correct_color_wrong_position}"
+  def correct_colors_wrong_positions(remaining_secret_code, remaining_guesses)
+    correct_color_wrong_position = 0
+
+    remaining_guesses.each do |guess|
+      index = remaining_secret_code.index(guess)
+      unless index.nil?
+        remaining_secret_code[index] = nil
+        correct_color_wrong_position += 1
+      end
+    end
+
+    correct_color_wrong_position
   end
 
-  def guess_matches_code(guesses, secret_code)
+  def guess_feedback(guesses)
+    correct_color_and_position, correct_color_wrong_position = guess_counter(guesses)
+    feedback = [correct_color_and_position, correct_color_wrong_position]
+
+    # For debugging or direct feedback, you can still print the values
+    puts "Correct color and position: #{correct_color_and_position}"
+    puts "Correct color, wrong position: #{correct_color_wrong_position}"
+
+    feedback
+  end
+
+  def guess_matches_code(guesses)
     correct_color_and_position = 0
 
     guesses.each_with_index do |guess, index|
-      correct_color_and_position += 1 if guess == secret_code[index]
+      correct_color_and_position += 1 if guess == @secret_code[index]
     end
 
     correct_color_and_position
   end
 
-  def guess_valid?(guess)
+  def guess_valid?(guesses)
     # Check if the guess is the correct length
-    correct_length = guess.length == 4 # Assuming a secret code length of 4
+    correct_length = guesses.length == 4 # Assuming a secret code length of 4
 
     # Check if every guessed color is in the list of possible colors
-    valid_colors = guess.all? { |color| Computer::COLORS.include?(color.to_sym) }
+    valid_colors = guesses.all? { |color| Computer::COLORS.include?(color.to_sym) }
     correct_length && valid_colors # Method returns true if both of theses are valid
   end
 
@@ -103,8 +111,10 @@ class Mastermind
     format_guess(@user_interaction.guess_input)
   end
 
-  def choose_mode
+  def choose_mode # rubocop:disable Metrics/MethodLength
     mode = nil
+
+    # Loop until the user selects a valid mode
     until %w[breaker creator].include?(mode)
       mode = @user_interaction.mode_select
       case mode
@@ -119,27 +129,47 @@ class Mastermind
     end
   end
 
-  def game_finished
-    # If the code was guessed, declare the winner
-    # If the player fails to guess, put 'you lose'
+  def check_win(guesses)
+    return unless code_guessed?(guesses)
+
+    game_over
+  end
+
+  def game_over
+    Utility.clear_screen
+    @game_board.display_board
+    puts 'Game Over!'
+    puts "You won!\n" if code_guessed?
+    @user_interaction.play_again
+  end
+
+  def code_guessed?(guesses)
+    guesses == @secret_code
   end
 
   # Splits the guess into an array
   def format_guess(guesses)
-    guesses.split.map(&:to_sym) # Convert each guess string to a symbol
+    guesses.downcase.split.map(&:to_sym) # Convert each guess string to a symbol
   end
 end
 
 # Contains logic relevant to getting inputs from the user
 class UserInteraction
+  include Utility
+
+  def welcome(name)
+    puts "Hello, #{name}! Welcome to Mastermind!"
+  end
+
   def user_name
     print 'Enter your name: '
-    gets.chomp.to_s
+    gets.chomp.to_s.downcase.capitalize
   end
 
   def guess_input
-    puts 'Possible colors: red blue green yellow black white'
+    puts "\nPossible colors: #{Computer::COLORS.join(' ')}\n\n"
     puts "Guess example: 'blue red green yellow'"
+    puts 'Code can be up to 4 colors.'
     print 'Enter your guess: '
     gets.chomp.to_s
   end
@@ -162,29 +192,42 @@ class UserInteraction
     print 'Enter your answer (breaker/creator): '
     gets.chomp.to_s.downcase
   end
+
+  def play_again
+    print 'Would you like to play again? (yes/no): '
+    answer = gets.chomp.to_s.downcase
+    if answer == 'yes'
+      Utility.clear_screen
+      Mastermind.new
+    else
+      puts 'Goodbye!'
+    end
+  end
 end
 
 # Contains logic relating to updating, changing and checking the board
 class GameBoard
   def initialize
-    @game_board = Array.new(12) { Array.new(4, '-') }
+    @game_board = Array.new(12) { { guess: Array.new(4, '-'), feedback: [] } }
   end
 
   def clear_board
-    @game_board = Array.new(12) { Array.new(4, '-') }
+    @game_board = Array.new(12) { { guess: Array.new(4, '-'), feedback: [] } }
   end
 
   def display_board
-    puts "\n"
-    puts 'The board:'
-    @game_board.each do |row|
-      puts row.join(' ')
+    puts "\nBoard:\n\n"
+    @game_board.reverse_each do |entry|
+      guess_str = entry[:guess].join(' ').upcase # Convert symbols to uppercase strings for display
+      feedback_str = entry[:feedback].empty? ? '[]' : entry[:feedback].inspect
+      puts "#{guess_str}  #{feedback_str}"
     end
     puts "\n"
   end
 
-  def update_board(round, colors)
-    @game_board[round] = colors.split # Assuming colors is a string of space-separated colors
+  def update_board(round, guess, feedback)
+    @game_board[round][:guess] = guess # Assuming guess is an array of symbols or strings
+    @game_board[round][:feedback] = feedback # Assuming feedback is an array like [2, 1]
   end
 end
 
@@ -200,15 +243,10 @@ end
 # Contains logic for the computer including moves,
 class Computer
   # The colors the computer can choose from
-  COLORS = %i[red blue green yellow black white].freeze
+  COLORS = %i[red blue green yellow black white purple pink orange brown].freeze
 
-  # This method can be done in one line, `COLORS.sample(code_length)`
   def generate_code(code_length)
-    color_code = []
-
-    # Sample method randomly selects an element from the array
-    code_length.times { color_code << COLORS.sample }
-    color_code
+    COLORS.sample(code_length).uniq
   end
 end
 
