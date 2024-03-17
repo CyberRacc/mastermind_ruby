@@ -25,7 +25,7 @@ class Mastermind # rubocop:disable Metrics/ClassLength
   def play_game
     puts 'Game Start!'
     round = 1
-    while round <= 12 # 12 is final round
+    while round <= 12
       puts "Round #{round}"
       play_round(round - 1)
       round += 1
@@ -111,6 +111,23 @@ class Mastermind # rubocop:disable Metrics/ClassLength
     format_guess(@user_interaction.guess_input)
   end
 
+  def computer_guesses
+    guess = nil
+    feedback = nil
+    12.times do |round|
+      puts "Computer's turn #{round + 1}"
+      guess = @computer.guess_code(feedback) # Pass feedback here
+      feedback = guess_feedback(guess) # Generate feedback based on the guess
+      @game_board.update_board(round, guess, feedback)
+      @game_board.display_board
+      break if code_guessed?(guess)
+    end
+    puts 'The computer could not guess your code!' unless code_guessed?(guess)
+    puts 'Well done!' unless code_guessed?(guess)
+    puts 'The computer guessed your code!' if code_guessed?(guess)
+    @user_interaction.play_again
+  end
+
   def choose_mode # rubocop:disable Metrics/MethodLength
     mode = nil
 
@@ -123,6 +140,7 @@ class Mastermind # rubocop:disable Metrics/ClassLength
         play_game
       when 'creator'
         @secret_code = @user_interaction.code_input(Computer::COLORS)
+        computer_guesses
       else
         puts 'Invalid input'
       end
@@ -178,13 +196,10 @@ class UserInteraction
     puts 'Create a code for the CPU to guess!'
     puts 'You can choose these colors:'
     colors.each { |color| print "#{color} " }
-
-    puts 'Please enter your selection of colors with spaces.'
-    puts 'Example'
-    puts 'blue white yellow red'
+    puts "\nPlease enter your selection of colors with spaces."
+    puts 'Example: blue white yellow red'
     print 'Enter your code: '
-
-    gets.chomp.to_s.downcase
+    gets.chomp.to_s.downcase.split.map(&:to_sym) # Convert the input into an array of symbols
   end
 
   def mode_select
@@ -242,11 +257,61 @@ end
 
 # Contains logic for the computer including moves,
 class Computer
+  attr_accessor :possible_colors, :eliminated_colors, :last_guess
+
   # The colors the computer can choose from
+  # The %i[] syntax is used to create an array of symbols
   COLORS = %i[red blue green yellow black white purple pink orange brown].freeze
+
+  def initialize
+    @possible_colors = COLORS.dup # The dup method is used to create a new array with the same elements
+    @eliminated_colors = []
+    @last_guess = []
+  end
 
   def generate_code(code_length)
     COLORS.sample(code_length).uniq
+  end
+
+  def guess_code(feedback = nil)
+    # For the first guess, the computer will just guess 4 random colors
+    if feedback.nil? || feedback == [0, 0]
+      @last_guess = generate_code(4)
+      return @last_guess
+    else
+      refine_guess(feedback)
+    end
+    @last_guess
+  end
+
+  def refine_guess(feedback)
+    # Assuming feedback format is [correct_position, correct_color_wrong_position]
+    correct_position, correct_color_wrong_position = feedback
+
+    # Strategy to keep correct-position colors and shuffle others
+    new_guess = Array.new(4)
+    correct_colors = []
+
+    @last_guess.each_with_index do |color, index|
+      if correct_position > 0 # If there are colors in the correct position
+        new_guess[index] = color
+        correct_position -= 1
+      elsif correct_color_wrong_position > 0 # Correct color but wrong position
+        correct_colors << color
+        correct_color_wrong_position -= 1
+      end
+    end
+
+    # Fill in the gaps with remaining possible colors, avoiding duplicates
+    new_guess.map! do |color|
+      color || (@possible_colors - new_guess - correct_colors).sample
+    end
+
+    # Ensure correct colors are included, possibly shuffled
+    new_guess = new_guess.map { |color| correct_colors.include?(color) ? correct_colors.shuffle!.pop : color }
+
+    @last_guess = new_guess.uniq
+    @last_guess = @last_guess.sample(4) while @last_guess.size < 4
   end
 end
 
